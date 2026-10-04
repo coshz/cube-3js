@@ -1,0 +1,28 @@
+{
+    "name": "cube",
+    "type": "module",
+    "version": "0.1.0",
+    "description": "Rubik's cube visualization",
+    "main": "index.html",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "test": "vitest",
+        "clean": "rm -rf dist"
+    },
+    "author": "coshz",
+    "license": "ISC",
+    "dependencies": {
+        "@coshz/jscube": "0.4.1",
+        "events": "3.3.0",
+        "three": "^0.182.0",
+        "typescript": "^5.7.2"
+    },
+    "devDependencies": {
+        "@types/three": "^0.182.0",
+        "vite": "^7.2.2",
+        "vite-plugin-static-copy": "^4.1.1",
+        "vitest": "^4.0.8"
+    }
+}

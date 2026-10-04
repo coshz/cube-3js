@@ -1,0 +1,20 @@
+name: Release Pipeline
+
+on:
+  push:
+    tags:
+      - 'v*'
+      
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create source archive
+        run: git archive --format=tar.gz -o source.tar.gz HEAD
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: source-${{ github.ref_name }}
+          path: source.tar.gz
