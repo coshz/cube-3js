@@ -1,4 +1,4 @@
-import { SolveResult, CubeID } from '@coshz/jscube';
+import { SolveResult } from '@coshz/jscube';
 import SolverWorker from './solver.worker?worker';
 
 
@@ -42,7 +42,7 @@ function getWorker(): SolverWorker {
 
 function sendToWorker<T>(
     payload: { type: 'solvable' | 'solve'; cube: string; target?: string},
-    timeoutMs = 60_000
+    timeoutMs = 40_000
 ): Promise<T> {
     return new Promise<T>((resolve, reject) => {
         const worker = getWorker();
@@ -68,4 +68,4 @@ class Solver {
     }
 }
 
-export { Solver, CubeID };
+export { Solver };

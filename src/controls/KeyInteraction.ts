@@ -1,10 +1,19 @@
 import { isLayerExt, MoveExt, MoveHintMap } from '../Defs';
-import { AbstractInteraction } from '../Types';
+import { AbstractInteraction, InteractionMode } from '../Types';
 import { ccBus } from '../services/CommandBus';
 
 
 class KeyInteraction extends AbstractInteraction {
+    constructor(
+        target: EventTarget,
+        protected state: { readonly mode: InteractionMode }
+    ) { 
+        super(target); 
+    }
+
     override onKeyDown(event: KeyboardEvent) {
+        if(this.state.mode !== 'View') return;
+        
         const target = event.target as HTMLElement;
         if(
             target.tagName === 'INPUT' || 

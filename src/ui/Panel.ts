@@ -1,5 +1,4 @@
 import { AbstractPanel, ICubeController, InteractionState } from "../Types";
-import { Layer } from "../Defs";
 import ConfigPanel from "./panels/ConfigPanel";
 import SolvePanel from "./panels/SolvePanel";
 import EditPanel from "./panels/EditPanel";
@@ -58,13 +57,11 @@ class PanelView {
             this.contentElement.appendChild(this.activeSubview.getElement())
         }
         this.state_ = newState;
-        this.updateToolbarInteractivity(newState==='idle');
+        this.updateToolbarVisibility(newState === 'idle');
     }
 
-    private updateToolbarInteractivity(isInteractive: boolean):void {
-        const buttons = this.toolbarElement.querySelectorAll<HTMLButtonElement>('button');
-        buttons.forEach(btn => { btn.disabled = !isInteractive; }); 
-        // this.toolbarElement.classList.toggle('is-disabled', !isInteractive);
+    private updateToolbarVisibility(visible: boolean):void {
+        this.toolbarElement.style.display = visible ? '' : 'none';
     }
 
     private onToolbarClick = (event: Event): void => {

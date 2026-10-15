@@ -1,7 +1,7 @@
-import { createCubeAPI, CubeID } from "@coshz/jscube";
+import { createCubeApi } from "@coshz/jscube";
 import { expect, test } from "vitest";
 
-const api = await createCubeAPI();
+const api = await createCubeApi();
 
 test("facecube", () => {
     const fR = api.facecube("R");
@@ -14,7 +14,7 @@ test("solve", () => {
     console.log(fc);
     const sol1 = api.solve(fc);
     console.log(sol1);
-    expect(api.facecube(sol1,fc)).toBe(CubeID);
-    const sol2 = api.solve(CubeID,{target:fc});
+    expect(api.facecube(sol1,fc)).toBe(api.cubeId);
+    const sol2 = api.solve(api.cubeId,{target:fc});
     expect(api.facecube(sol2)).toBe(fc);
 });

@@ -1,0 +1,7 @@
+v0.1.1
+- Add support for mobile devices
+- Upgrade jscube to v0.5.0 for better solver performance
+- Fix bugs: wrong layer rotation on face B
+
+v0.1.0
+- First release

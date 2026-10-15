@@ -17,7 +17,10 @@ class EditInteraction extends AbstractInteraction {
         super(target);
     }
 
-    override onMouseDown(event: MouseEvent) {
+    override onPointerDown(event: PointerEvent) {
+        if(!event.isPrimary) return;
+        if(event.button !== 0) return;
+        
         if(this.state.mode !== 'Edit') return;
         const id = this.projector.raycastToSticker(event.clientX, event.clientY);
         if(!id) return;

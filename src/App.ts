@@ -1,4 +1,4 @@
-import { ICubeController, AbstractCubeView, ICubeProjector, StickerId } from './Types';
+import { ICubeController, AbstractCubeView, ICubeProjector } from './Types';
 import CanvasView from './ui/Canvas';
 import PanelView from './ui/Panel';
 import { CubeController } from './core/RubikCube';
@@ -27,7 +27,7 @@ class CubeApp {
         this.panel = new PanelView(this.controller, document.getElementById("panel")!);
         
         this.canvas.addInteractions([
-            new KeyInteraction(window),
+            new KeyInteraction(window, this.panel.interactionState),
             new MouseInteraction(this.canvas.domElement(), this.projector, this.panel.interactionState),
             new EditInteraction(this.canvas.domElement(), this.projector, this.panel.interactionState)
         ]);

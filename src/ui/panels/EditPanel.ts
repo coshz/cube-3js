@@ -39,7 +39,6 @@ class EditPanel extends AbstractPanel {
         });
         ccBus.register('edit-face', (cmd: EditFaceCommand) => {
             if(!is_center_id(cmd.stickerId)) return;
-            console.log('id: ', cmd.stickerId);
             this.cubeEditor.paintFace(cmd.stickerId);
             this.onColorChanged();
         });

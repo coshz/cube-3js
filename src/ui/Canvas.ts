@@ -46,7 +46,8 @@ class CanvasView {
     private make_camera_(): THREE.PerspectiveCamera {
         const camera = new THREE.PerspectiveCamera(60,1,0.1,100);
         camera.position.set(5,5,5);
-        camera.lookAt(0,0,0); 
+        // camera.lookAt(0,0,0); 
+        camera.lookAt(0,-2,0);
         camera.up.set(0,1,0);
         return camera;
     }
@@ -54,9 +55,9 @@ class CanvasView {
     private make_scene_(): THREE.Scene {
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0xababab);
-        const ambient = new THREE.AmbientLight(0xffffff, 0.8);
+        const ambient = new THREE.AmbientLight(0xffffff, 3.0);
         scene.add(ambient);
-        const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
         dirLight.position.set(5, 10, 7);
         dirLight.castShadow = false;
         scene.add(dirLight);

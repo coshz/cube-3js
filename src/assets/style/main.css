@@ -1,23 +1,36 @@
-html,body { 
-  margin: 0; 
+html, body {
+  margin: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
+  overscroll-behavior: none;          
+  -webkit-text-size-adjust: 100%;     
 }
 
 #app {
   height: 100%;
-  display: flex;
+  height: 100dvh;
+  position: relative;
 }
 
 #viewport {
-  flex: 1;
+  width: 100%;
+  height: 100%;
+  flex: 1 1 auto;
+  /* min-height: 0;      */
+  position: relative;
+  touch-action: pinch-zoom; 
+}
+
+#viewport canvas {
+  display: block;
   width: 100%;
   height: 100%;
 }
 
 #panel {
-  position: fixed;
+  /* flex: 0 0 auto; */
+  position: absolute;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
@@ -25,11 +38,16 @@ html,body {
 
   background-color: rgba(0, 0, 0, 0.7);
   color: white;
-  padding: 10px 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  min-width: 200px;
-  max-width: 90vw;
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  
+  width: auto;
+  min-width: 320px;
+  max-width: calc(100vw - 40px);
+  box-sizing: border-box;
   text-align: center;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.15);
 }

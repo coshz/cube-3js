@@ -7,6 +7,11 @@ type Axis = 'x' | 'y' | 'z';
 type Slot = [Layer,number]; 
 type Pos3 = [x:number,y:number,z:number];
 type Pos4 = [x:number,y:number,z:number,w:number];
+type LayerMove = {
+    axis: Axis, 
+    ori: number, // -1 clockwise; +1 counter-clockwise
+    index: number
+};
 
 const indexOfSlot = (slot: Slot, dim: number): number => 
     ORDERED_LAYERS.indexOf(slot[0]) * dim * dim + slot[1];
@@ -83,4 +88,4 @@ const MoveHintMap = (() => {
 })();
 
 export { ORDERED_LAYERS, COLOR_OF_LAYER, COLOR_TO_LAYER, MoveHintMap, isLayerExt, indexOfSlot, indexToSlot };
-export type { Face, Layer, Axis, Slot, Pos3, Pos4, MoveExt, MoveHint };
+export type { Face, Layer, Axis, Slot, Pos3, Pos4, MoveExt, MoveHint, LayerMove };

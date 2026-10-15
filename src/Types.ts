@@ -1,5 +1,5 @@
 import { cartesianConcat, cartesianConcatPower, numRange } from "./helpers";
-import { ORDERED_LAYERS, MoveHint, Axis, Layer, Slot, Pos3, Pos4, indexOfSlot, indexToSlot, MoveExt } from './Defs';
+import { ORDERED_LAYERS, MoveHint, Axis, Layer, Slot, Pos3, Pos4, indexOfSlot, indexToSlot, MoveExt, LayerMove } from './Defs';
 import * as THREE from 'three';
 
 type StickerId = `${Layer}${number}`;
@@ -75,7 +75,7 @@ abstract class AbstractCubeLayout {
             }
             case 'B': {
                 const rem = dim * dim - 1 - idx;
-                const [x,y] = [ Math.floor(rem / dim), rem % dim ];
+                const [x,y] = [ rem % dim, Math.floor(rem / dim) ];
                 return [x, y, 0, 5];
             }
             default: return null;
@@ -111,6 +111,29 @@ abstract class AbstractCubeLayout {
     /* check if a pos has slots (false if pos3 locates inside the cube) */
     protected static hasSlotsHelper(pos: Pos3 | Pos4, dim: number): boolean {
         return pos.slice(0,3).some( val => val === 0 || val === dim-1 );
+    }
+
+    /**
+     * Compute the layer rotation derived from sticker displacement
+     *
+     * @param s - Pos4 [x, y, z, w] where x/y/z are **index** coordinates
+     *            in [0, dim), and w is the sticker's outward normal (0..5).
+     * @param d - Displacement direction (0..5), using the same encoding as `w`.
+     * @returns A LayerRotation, or `null` when `d` is collinear with the
+     *          sticker's normal (i.e. no layer rotation produce such displacement).
+     */
+    public static layerMoveFromSD(s: Pos4, d: number): LayerMove | null {
+        if( (d >> 1) === (s[3] >> 1) ) return null;
+        const [nx, ny, nz] = AxisHelper.vectorOf(s[3]);
+        const [tx, ty, tz] = AxisHelper.vectorOf(d);
+        const ax = ny * tz - nz * ty;
+        const ay = nz * tx - nx * tz;
+        const az = nx * ty - ny * tx;
+
+        if (ax !== 0) return { axis: 'x', index: s[0], ori: ax > 0 ? +1 : -1 };
+        if (ay !== 0) return { axis: 'y', index: s[1], ori: ay > 0 ? +1 : -1 };
+        if (az !== 0) return { axis: 'z', index: s[2], ori: az > 0 ? +1 : -1 };
+        return null;
     }
 }
 
@@ -292,9 +315,11 @@ abstract class AbstractPanel {
     protected abstract destroy(): void;
 }
 
-type EventMethod = 'onKeyDown' | 'onKeyUp' | 'onMouseDown' | 'onMouseMove' | 'onMouseUp';
+type EventMethod = 
+    'onKeyDown' | 'onKeyUp' | 
+    'onPointerDown' | 'onPointerMove' | 'onPointerUp' | 'onPointerCancel';
 
-type InteractionMode = 'Edit' | 'View';
+type InteractionMode = 'Edit' | 'Solve' | 'View';
 
 class InteractionState {
     private mode_: InteractionMode = 'View';
@@ -320,9 +345,10 @@ class InteractionState {
 class AbstractInteraction {
     protected onKeyDown?(event: KeyboardEvent): void;
     protected onKeyUp?(event: KeyboardEvent): void;
-    protected onMouseDown?(event: MouseEvent): void;
-    protected onMouseMove?(event: MouseEvent): void;
-    protected onMouseUp?(event: MouseEvent): void;
+    protected onPointerDown?(event: PointerEvent): void;
+    protected onPointerMove?(event: PointerEvent): void;
+    protected onPointerUp?(event: PointerEvent): void;
+    protected onPointerCancel?(event: PointerEvent): void;
 
     private handlers: Array<[string,EventListener]> = [];
 
@@ -336,16 +362,17 @@ class AbstractInteraction {
         const eventMap: Array<[string, EventMethod]> = [
             ['keydown', 'onKeyDown'],
             ['keyup', 'onKeyUp'],
-            ['mousedown', 'onMouseDown'],
-            ['mousemove', 'onMouseMove'],
-            ['mouseup', 'onMouseUp'],
+            ['pointerdown', 'onPointerDown'],
+            ['pointermove', 'onPointerMove'],
+            ['pointerup', 'onPointerUp'],
+            ['pointercancel', 'onPointerCancel'],
         ];
 
         for(const [eventName, methodName] of eventMap) {
             const method = this[methodName];
             const baseMethod = AbstractInteraction.prototype[methodName];
             if(typeof method === 'function' && method !== baseMethod) {
-                const handler = method.bind(this) as EventListener;
+                let handler = method.bind(this) as EventListener;
                 this.target.addEventListener(eventName, handler);
                 this.handlers.push([eventName, handler]);
             }
@@ -517,10 +544,13 @@ class AxisHelper {
         [0,-1,0], // -Y
         [0,0,+1], // +Z
         [0,0,-1], // -Z
-    ]);
+    ] as const);
 
+    /* shared, frozon Vector3 instances, DO NOT mutate them. */
     private static readonly axisVectors = Object.freeze(
-        AxisHelper.axisDirections.map( v => new THREE.Vector3(...v) )
+        AxisHelper.axisDirections.map( v => 
+            Object.freeze(new THREE.Vector3(...v)) 
+        )
     );
 
     public static indexOf(axis: THREE.Vector3):number {

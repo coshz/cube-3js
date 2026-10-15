@@ -1,23 +1,6 @@
-import { createCubeAPI, CubeID } from "@coshz/jscube";
+import { createCubeApi } from "@coshz/jscube";
 
-const apiPromise = createCubeAPI();
-
-// self.onmessage = async (e: MessageEvent<{ 
-//     id:number, 
-//     type: 'solvable' | 'solve'; 
-//     cube: string;
-//     target?: string
-// }>) => {
-//     const api = await apiPromise;
-//     const { id, type, cube, target = CubeID } = e.data;
-//     if(type === 'solvable') {
-//         self.postMessage({ id, value: api.solvable(cube) });
-//     } else if(type === 'solve') {
-//         self.postMessage({ id, value: api.trySolve(cube, { target }) });
-//     } else {
-//         self.postMessage({ id, error: "worker: unknown type" });
-//     }
-// }
+const apiPromise = createCubeApi();
 
 self.onmessage = async (e: MessageEvent<{ 
     id:number, 
@@ -25,13 +8,13 @@ self.onmessage = async (e: MessageEvent<{
     cube: string;
     target?: string
 }>) => {
-    const { id, type, cube, target = CubeID } = e.data;
+    const { id, type, cube } = e.data;
     try {
         const api = await apiPromise;
         if(type === 'solvable') {
             self.postMessage({ id, value: api.solvable(cube) });
         } else if(type === 'solve') {
-            self.postMessage({ id, value: api.trySolve(cube, { target }) });
+            self.postMessage({ id, value: api.trySolve(cube, { target: e.data.target ?? api.cubeId, goodEnough: 24 }) });
         } else {
             self.postMessage({ id, error: "worker: unknown type" });
         }

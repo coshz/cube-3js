@@ -11,14 +11,6 @@ type ConfigCommand = { type: 'config'; colors: string };
 type EditCommand = { type: 'edit', stickerId: StickerId, color: Layer };
 type EditFaceCommand = { type: 'edit-face', stickerId: StickerId };
 
-type SolveCommand = { type: 'solve', target?: string }
-
-type SolveResultCommand = { type: 'solve-result', success: boolean, solution?: string, error?: string}
-
-type ActiveColorCommand = { type: 'active-color', color: Layer };
-
-type SolveCommands = SolveCommand | SolveResultCommand;
-
 type CubeCommand = 
     | MoveCommand 
     | ArcballCommand 
@@ -27,7 +19,6 @@ type CubeCommand =
     | ConfigCommand
     | EditCommand
     | EditFaceCommand
-    | SolveCommands
 ;
 
 type CommandType = CubeCommand['type'];
@@ -60,4 +51,4 @@ class CommandBus {
 const ccBus = new CommandBus();
 
 export { ccBus };
-export type { MoveCommand, ArcballCommand, ReorientCommand, ResetCommand, ConfigCommand, EditCommand, EditFaceCommand, CubeCommand, SolveCommand, SolveResultCommand };
+export type { MoveCommand, ArcballCommand, ReorientCommand, ResetCommand, ConfigCommand, EditCommand, EditFaceCommand, CubeCommand };

@@ -47,13 +47,18 @@ class ConfigPanel extends AbstractPanel {
     private onApply = () => {
         const stateStr = this.stateInput.value.trim();
         const moveStr = this.moveInput.value.trim();
+        if(!stateStr && !moveStr) {
+            alert('Please specify a state or a move');
+            return;
+        }
         if(stateStr && stateStr !== this.controller.getColorConfig()) {
             if(stateStr.length !== 54) {
-                alert('error: only length 54 supported');
+                alert('State must be exactly 54 characters');
                 return;
             }
             ccBus.dispatch({ type: 'config', colors: stateStr });
             this.onDismiss();
+            return;
         }
         if(moveStr) {
             const ms = MoveSerializer.deserialize(moveStr);
@@ -63,8 +68,6 @@ class ConfigPanel extends AbstractPanel {
             }
             ccBus.dispatch({ type: 'move', move: ms });
             this.onDismiss();
-        } else {
-            alert('error: no state or move specified');
             return;
         }
     }

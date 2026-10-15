@@ -14,7 +14,7 @@
     "author": "coshz",
     "license": "ISC",
     "dependencies": {
-        "@coshz/jscube": "0.4.1",
+        "@coshz/jscube": "0.5.0",
         "events": "3.3.0",
         "three": "^0.182.0",
         "typescript": "^5.7.2"
