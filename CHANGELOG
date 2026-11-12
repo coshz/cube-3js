@@ -1,3 +1,6 @@
+v0.1.2
+- Performance improved through upgrading @coshz/jscube to v0.7.2
+
 v0.1.1
 - Add support for mobile devices
 - Upgrade jscube to v0.5.0 for better solver performance
